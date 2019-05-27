@@ -156,6 +156,53 @@ MyComponent.propTypes = {
 
 Refer to the [React documentation](https://facebook.github.io/react/docs/typechecking-with-proptypes.html) for more information.
 
+## Immutable JS PropTypes
+
+ Immutable type checker added for e-Liberty projects. For example :
+ 
+ ```js
+ import React from 'react';
+ import PropTypes from 'prop-types';
+ import { connect } from 'react-redux';
+ 
+ const User = props => {
+   const { user } = props;
+   const name = user.getIn(['contact', 'name']);
+   const age = user.getIn(['contact', 'age']);
+   const birthdate = user.getIn(['contact', 'birthdate']);
+ 
+   return (
+     <div className="User">
+       <h3>User :</h3>
+       <p>Name : {name}</p>
+       {age && <p>Age : ${age}</p>}
+       {birthdate && <p>birthdate : ${birthdate}</p>}
+     </div>
+   );
+ };
+ 
+ User.propTypes = {
+   user: PropTypes.immutable({
+     isLoading: PropTypes.bool.isRequired,
+     data: PropTypes.shape({
+       name: PropTypes.string.isRequired,
+       age: PropTypes.number,
+       birthdate: PropTypes.string,
+     }),
+     error: PropTypes.array,
+   }).isRequired,
+ };
+ 
+ const mapStateToProps = state => ({
+   user: state.get('user'),
+ });
+ 
+ export default connect(mapStateToProps)(User);
+ ```
+
+The immutable type checker let you describe every types like if it's not some immutable object.
+So, you just have to wrap the first level of an immutable object with `Proptypes.immutable()` and use basic prop-types after !
+
 ## Migrating from React.PropTypes
 
 Check out [Migrating from React.PropTypes](https://facebook.github.io/react/blog/2017/04/07/react-v15.5.0.html#migrating-from-react.proptypes) for details on how to migrate to `prop-types` from `React.PropTypes`.
