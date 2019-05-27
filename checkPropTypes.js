@@ -7,7 +7,8 @@
 
 'use strict';
 
-var Immutable = require('immutable');
+var transformImmutableData = require('./immutable');
+
 var printWarning = function() {};
 
 if (process.env.NODE_ENV !== 'production') {
@@ -60,19 +61,7 @@ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
             err.name = 'Invariant Violation';
             throw err;
           }
-
-          // Transform every object/property that is immutable to plain object JS
-          // no function "isImmutable", so it's hard to check what is really immutable or not
-          // so i've decided to transform everything each time 'values' is not not empty, regardless it's immutable or not
-          var newValues = values;
-          if (newValues) {
-            var immutableValue = Immutable.fromJS(newValues);
-            if (immutableValue) {
-              newValues = immutableValue.toJS();
-            }
-          }
-
-          error = typeSpecs[typeSpecName](newValues, typeSpecName, componentName, location, null, ReactPropTypesSecret);
+          error = typeSpecs[typeSpecName](transformImmutableData(values), typeSpecName, componentName, location, null, ReactPropTypesSecret);
         } catch (ex) {
           error = ex;
         }
@@ -111,6 +100,6 @@ checkPropTypes.resetWarningCache = function() {
   if (process.env.NODE_ENV !== 'production') {
     loggedTypeFailures = {};
   }
-}
+};
 
 module.exports = checkPropTypes;
