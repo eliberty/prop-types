@@ -13,6 +13,7 @@ var assign = require('object-assign');
 var ReactPropTypesSecret = require('./lib/ReactPropTypesSecret');
 var has = require('./lib/has');
 var checkPropTypes = require('./checkPropTypes');
+var transformImmutableData = require('./immutable');
 
 var printWarning = function() {};
 
@@ -441,7 +442,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
   function createImmutableTypeChecker(shapeTypes) {
     function validate(props, propName, componentName, location, propFullName) {
-      var propValue = props[propName];
+      var propValue = transformImmutableData(props[propName]);
       var propType = getPropType(propValue);
       if (propType !== 'object') {
         return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
