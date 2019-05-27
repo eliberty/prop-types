@@ -41,13 +41,6 @@ if (process.env.NODE_ENV !== 'production') {
  * @private
  */
 function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
-  // Transform every object/property that is immutable to plain object JS
-  // no function "isImmutable", so it's hard to check what is really immutable or not
-  // so i've decided to transform everything each time, regardless it's immutable or not
-  var myValue = values;
-  if (values) {
-    myValue = Immutable.fromJS(values).toJS();
-  }
   if (process.env.NODE_ENV !== 'production') {
     for (var typeSpecName in typeSpecs) {
       if (has(typeSpecs, typeSpecName)) {
@@ -67,7 +60,19 @@ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
             err.name = 'Invariant Violation';
             throw err;
           }
-          error = typeSpecs[typeSpecName](myValue, typeSpecName, componentName, location, null, ReactPropTypesSecret);
+
+          // Transform every object/property that is immutable to plain object JS
+          // no function "isImmutable", so it's hard to check what is really immutable or not
+          // so i've decided to transform everything each time 'values' is not not empty, regardless it's immutable or not
+          var newValues = values;
+          if (newValues) {
+            var immutableValue = Immutable.fromJS(newValues);
+            if (immutableValue) {
+              newValues = immutableValue.toJS();
+            }
+          }
+
+          error = typeSpecs[typeSpecName](newValues, typeSpecName, componentName, location, null, ReactPropTypesSecret);
         } catch (ex) {
           error = ex;
         }
