@@ -131,6 +131,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
     oneOf: createEnumTypeChecker,
     oneOfType: createUnionTypeChecker,
     shape: createShapeTypeChecker,
+    immutable: createImmutableTypeChecker,
     exact: createStrictShapeTypeChecker,
   };
 
@@ -427,6 +428,28 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
         var checker = shapeTypes[key];
         if (typeof checker !== 'function') {
           return invalidValidatorError(componentName, location, propFullName, key, getPreciseType(checker));
+        }
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+        if (error) {
+          return error;
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createImmutableTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      }
+      for (var key in shapeTypes) {
+        var checker = shapeTypes[key];
+        if (!checker) {
+          continue;
         }
         var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
         if (error) {
