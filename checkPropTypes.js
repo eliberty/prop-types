@@ -44,8 +44,10 @@ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
   // Transform every object/property that is immutable to plain object JS
   // no function "isImmutable", so it's hard to check what is really immutable or not
   // so i've decided to transform everything each time, regardless it's immutable or not
-  var myValue = Immutable.fromJS(values).toJS();
-
+  var myValue = values;
+  if (values) {
+    myValue = Immutable.fromJS(values).toJS();
+  }
   if (process.env.NODE_ENV !== 'production') {
     for (var typeSpecName in typeSpecs) {
       if (has(typeSpecs, typeSpecName)) {
