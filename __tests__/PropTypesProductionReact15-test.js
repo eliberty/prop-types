@@ -505,7 +505,7 @@ describe('PropTypesProductionReact15', () => {
       };
       const iterable = {
         '@@iterator': function() {
-          let i = 0;
+          const i = 0;
           return {
             next: function() {
               const done = ++i > 2;
@@ -525,7 +525,7 @@ describe('PropTypesProductionReact15', () => {
       };
       const iterable = {
         '@@iterator': function() {
-          let i = 0;
+          const i = 0;
           return {
             next: function() {
               const done = ++i > 2;
