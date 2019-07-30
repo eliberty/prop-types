@@ -182,7 +182,7 @@ Refer to the [React documentation](https://facebook.github.io/react/docs/typeche
  };
  
  User.propTypes = {
-   user: PropTypes.immutable({
+   user: PropTypes.shapeImmutable({
      isLoading: PropTypes.bool.isRequired,
      data: PropTypes.shape({
        name: PropTypes.string.isRequired,
@@ -201,7 +201,7 @@ Refer to the [React documentation](https://facebook.github.io/react/docs/typeche
  ```
 
 The immutable type checker let you describe every types like if it's not some immutable object.
-So, you just have to wrap the first level of an immutable object with `Proptypes.immutable()` and use basic prop-types after !
+So, you just have to wrap the first level of an immutable object with `Proptypes.shapeImmutable()` and use basic prop-types after !
 
 ## Migrating from React.PropTypes
 

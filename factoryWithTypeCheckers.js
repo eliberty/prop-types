@@ -124,6 +124,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
     any: createAnyTypeChecker(),
     arrayOf: createArrayOfTypeChecker,
+    arrayOfImmutable: createImmutableArrayOfTypeChecker,
     element: createElementTypeChecker(),
     elementType: createElementTypeTypeChecker(),
     instanceOf: createInstanceTypeChecker,
@@ -132,7 +133,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
     oneOf: createEnumTypeChecker,
     oneOfType: createUnionTypeChecker,
     shape: createShapeTypeChecker,
-    immutable: createImmutableTypeChecker,
+    shapeImmutable: createImmutableTypeChecker,
     exact: createStrictShapeTypeChecker,
   };
 
@@ -257,6 +258,27 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
         return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
       }
       var propValue = props[propName];
+      if (!Array.isArray(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
+      }
+      for (var i = 0; i < propValue.length; i++) {
+        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret);
+        if (error instanceof Error) {
+          return error;
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createImmutableArrayOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
+      }
+      var propValue = transformImmutableData(props[propName]);
       if (!Array.isArray(propValue)) {
         var propType = getPropType(propValue);
         return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
