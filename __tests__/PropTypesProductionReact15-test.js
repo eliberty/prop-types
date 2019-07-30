@@ -177,7 +177,7 @@ describe('PropTypesProductionReact15', () => {
   });
 
   describe('Any type', () => {
-    it('should should accept any value', () => {
+    it('should accept any value', () => {
       expectNoop(PropTypes.any, 0);
       expectNoop(PropTypes.any, 'str');
       expectNoop(PropTypes.any, []);
@@ -505,7 +505,7 @@ describe('PropTypesProductionReact15', () => {
       };
       const iterable = {
         '@@iterator': function() {
-          let i = 0;
+          const i = 0;
           return {
             next: function() {
               const done = ++i > 2;
@@ -525,7 +525,7 @@ describe('PropTypesProductionReact15', () => {
       };
       const iterable = {
         '@@iterator': function() {
-          let i = 0;
+          const i = 0;
           return {
             next: function() {
               const done = ++i > 2;
