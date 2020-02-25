@@ -44,6 +44,7 @@ module.exports = function() {
 
     any: shim,
     arrayOf: getShim,
+    arrayOfImmutable: getShim,
     element: shim,
     elementType: shim,
     instanceOf: getShim,
@@ -52,6 +53,7 @@ module.exports = function() {
     oneOf: getShim,
     oneOfType: getShim,
     shape: getShim,
+    shapeImmutable: getShim,
     exact: getShim,
 
     checkPropTypes: emptyFunctionWithReset,
